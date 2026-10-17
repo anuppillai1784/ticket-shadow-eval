@@ -2,15 +2,15 @@
 
 ## What it does
 
-ticket-shadow-eval runs 100 synthetic support tickets through an agent. It compares each agent answer with the human resolution. It reports accuracy, the failed tickets, and a GO or NO-GO verdict.
+ticket-shadow-eval runs 100 synthetic support tickets through an agent. It compares each agent output with the human resolution. It reports accuracy, the failed tickets, and a GO or NO-GO verdict.
 
 ## Why it matters
 
-Shadow testing runs an agent beside real work before go-live. The agent output is only logged, so it cannot affect a customer.
+Shadow testing runs an agent beside real work before go-live. The harness only logs the agent output, so the output cannot affect a customer.
 
 ## Quickstart
 
-Requires Python 3.11 or newer. The project has no dependencies and no install step.
+The only requirement is Python 3.11 or newer. The project has no dependencies.
 
 ```
 python3 -m unittest discover
@@ -70,13 +70,13 @@ The generator makes 100 tickets from one seed. Each category gets 20 tickets. Ea
 
 The agent is any function that takes text and returns a string. The string must be a JSON object with the keys `category`, `fields`, and `escalate`. The built-in `mock_agent` uses keyword rules. Its rules miss some cases on purpose.
 
-The shadow pass calls the agent on each ticket. It writes the raw output beside the human resolution. No code reads the prediction to take an action. Output that is not valid JSON is logged as unparsed. An unparsed output counts as wrong on every item.
+The shadow pass calls the agent on each ticket. It writes the raw output beside the human resolution. No code acts on the agent output. The shadow pass marks output that is not valid JSON as unparsed. An unparsed output counts as wrong on every item.
 
 Scoring works as follows. A category is correct when it matches after trimming and lowercasing. Each of the three field slots counts. A missing human value matches only a missing answer. Escalation uses the flag from the agent. Precision and recall use the human escalate flag. A ratio with a zero denominator shows as n/a and fails its gate.
 
 The report gives a Wilson 95% interval for each accuracy rate. The Wilson interval is a 95% range for the true rate. Small samples give wide ranges. A gate passes when its value is at or above its threshold. One failed gate gives NO-GO.
 
-The same seed always gives the same bytes in both output files. The outputs have no timestamps or run IDs.
+Two runs with the same seed write identical output files. The outputs have no timestamps or run IDs.
 
 ## Sample output
 
