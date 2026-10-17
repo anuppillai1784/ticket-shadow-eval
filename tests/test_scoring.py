@@ -54,6 +54,7 @@ class ScoreEscalationTest(unittest.TestCase):
         score = score_record(_record(_truth(escalate=True), _prediction(escalate=False)))
         self.assertFalse(score["escalate_flagged"])
         self.assertTrue(score["escalate_expected"])
+        self.assertFalse(score["escalate_correct"])
 
 
 class ScoreParseFailureTest(unittest.TestCase):
